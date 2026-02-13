@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cute AI Bouncing Ball Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef, #a8edea, #fed6e3); /* Cute pastel gradient background */
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        #startScreen {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #gameCanvas {
+            border: 2px solid #333;
+            background: #fff;
+            display: none;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #score {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="startScreen">
+        <h1>🤖 Cute AI Wants to Play!</h1>
+        <p>Do you want to play a bouncing ball game?</p>
+        <button id="yesBtn">Yes!</button>
+        <button id="noBtn">No</button>
+    </div>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <div id="score">Score: 0</div>
+
+    <script>
+        const startScreen = document.getElementById('startScreen');
+        const gameCanvas = document.getElementById('gameCanvas');
+        const scoreDisplay = document.getElementById('score');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+
+        let score = 0;
+        let ball = { x: 300, y: 200, dx: 2, dy: 2, radius: 20 };
+        let animationId;
+
+        yesBtn.addEventListener('click', startGame);
+        noBtn.addEventListener('click', () => alert('Maybe next time! 😊'));
+
+        function startGame() {
+            startScreen.style.display = 'none';
+            gameCanvas.style.display = 'block';
+            score = 0;
+            scoreDisplay.textContent = 'Score: ' + score;
+            animate();
+        }
+
+        function animate() {
+            const ctx = gameCanvas.getContext('2d');
+            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            // Draw ball
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#ff6b6b';
+            ctx.fill();
+            ctx.closePath();
+
+            // Bounce off walls
+            if (ball.x + ball.radius > gameCanvas.width || ball.x - ball.radius < 0) {
+                ball.dx = -ball.dx;
+                score++;
+            }
+            if (ball.y + ball.radius > gameCanvas.height || ball.y - ball.radius < 0) {
+                ball.dy = -ball.dy;
+                score++;
+            }
+
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            scoreDisplay.textContent = 'Score: ' + score;
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Click to change direction (optional interaction)
+        gameCanvas.addEventListener('click', () => {
+            ball.dx = -ball.dx;
+            ball.dy = -ball.dy;
+        });
+    </script>
+</body>
+</html>
